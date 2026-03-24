@@ -28,10 +28,10 @@ public class PairwiseIntegrationTest {
 
     private CheckoutService checkoutService;
 
-    private static final Long   CUSTOMER_ID = 1L;
-    private static final int    QTY         = 3;
-    private static final double UNIT_PRICE  = 50.0;
-    private static final double SUBTOTAL    = QTY * UNIT_PRICE; // 150.0
+    private static final Long CUSTOMER_ID = 1L;
+    private static final int QTY = 3;
+    private static final double UNIT_PRICE = 50.0;
+    private static final double SUBTOTAL = QTY * UNIT_PRICE; // 150.0
 
     @BeforeEach
     void init() {
