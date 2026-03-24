@@ -6,8 +6,6 @@ import static org.example.constants.RegionEnum.INVALID;
 
 public class ShippingService {
 
-    /* ──── ORIGINAL METHOD (untouched) ──── */
-
     public double determineShippingCost(boolean isMember,
                                         double orderTotal,
                                         boolean isExpress) {
@@ -28,8 +26,6 @@ public class ShippingService {
 
         return Math.round(cost * 100.0) / 100.0;
     }
-
-    /* ──── NEW METHODS (added for integration) ──── */
 
     public boolean isDeliveryAvailable(RegionEnum region) {
         return region != INVALID;

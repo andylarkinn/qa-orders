@@ -12,8 +12,6 @@ import static org.example.constants.ResponseEnum.*;
 
 public class OrderService {
 
-    /* ──── ORIGINAL METHODS (untouched) ──── */
-
     public double calculateDiscount(double amount, CustomerTypeEnum customerType,
                                     boolean hasCoupon, boolean isHoliday) {
         double discount = 0;
@@ -71,8 +69,6 @@ public class OrderService {
 
         return new OrderStatus(ORDER_CONFIRMED, total);
     }
-
-    /* ──── NEW METHODS (added for integration) ──── */
 
     public double calculateTax(double amount, RegionEnum region) {
         if (amount <= 0) return 0;
