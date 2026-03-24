@@ -6,70 +6,88 @@ import org.example.entities.OrderStatus;
 
 import static org.example.constants.CustomerTypeEnum.GOLD;
 import static org.example.constants.CustomerTypeEnum.SILVER;
+import static org.example.constants.RegionEnum.DOMESTIC;
+import static org.example.constants.RegionEnum.INTERNATIONAL;
 import static org.example.constants.ResponseEnum.*;
 
-
-/**
- * N stands for Node;
- * D stands for Decision
- */
 public class OrderService {
+
+    /* ──── ORIGINAL METHODS (untouched) ──── */
 
     public double calculateDiscount(double amount, CustomerTypeEnum customerType,
                                     boolean hasCoupon, boolean isHoliday) {
-        double discount = 0;   // N 1
+        double discount = 0;
 
-        if (amount <= 0) {  // D1 (N 1)
-            return -1;                                // N 2
+        if (amount <= 0) {
+            return -1;
         }
 
-        if (customerType.equals(GOLD)) {    // D2 (N 3)
-            discount = 20;                            // N 4
-        } else if (customerType.equals(SILVER)) {   // D3 (N 5)
-            discount = 10;                            // N 6
+        if (customerType.equals(GOLD)) {
+            discount = 20;
+        } else if (customerType.equals(SILVER)) {
+            discount = 10;
         } else {
-            discount = 0;                // N 7
+            discount = 0;
         }
 
-        if (hasCoupon) {    // D4 (N 8)
-            discount += 5;        // N 9
+        if (hasCoupon) {
+            discount += 5;
         }
 
-        if (isHoliday) {                              // D5 (N 10)
-            discount += 3;                            // N 11
+        if (isHoliday) {
+            discount += 3;
         }
 
-        return amount - (amount * discount / 100);    // N 12
+        return amount - (amount * discount / 100);
     }
 
     public OrderStatus validateAndProcessOrder(int quantity, double unitPrice,
-                                               RegionEnum region, boolean isExpress) {
+                                               RegionEnum region,
+                                               boolean isExpress) {
+        if (quantity <= 0)
+            return new OrderStatus(INVALID_QUANTITY, null);
 
-        if (quantity <= 0)                            // D1 (N 1)
-            return new OrderStatus(INVALID_QUANTITY, null);                     // N 2
+        if (unitPrice <= 0)
+            return new OrderStatus(INVALID_PRICE, null);
 
-        if (unitPrice <= 0)                             // D2 (N 3)
-            return new OrderStatus(INVALID_PRICE, null);                        // N 4
-
-        double total = quantity * unitPrice;               // N 5
+        double total = quantity * unitPrice;
 
         switch (region) {
-            case DOMESTIC: // D3 (N 5)
-                total+=5;
-                break;// N 6
-            case INTERNATIONAL: // D4 (N 7)
-                total+=25;  // N 8
+            case DOMESTIC:
+                total += 5;
                 break;
-            case INVALID: return new OrderStatus(INVALID_REGION, null); // N 9
+            case INTERNATIONAL:
+                total += 25;
+                break;
+            case INVALID:
+                return new OrderStatus(INVALID_REGION, null);
         }
 
-        if (isExpress)                                   // D5 (N 10)
-            total += 15.0;                                 // N 11
+        if (isExpress)
+            total += 15.0;
 
+        if (total > 1000)
+            return new OrderStatus(ORDER_REQUIRES_APPROVAL, total);
 
-        if (total > 1000)                                // D6 (N 12)
-            return new OrderStatus(ORDER_REQUIRES_APPROVAL, total);           // N 13
+        return new OrderStatus(ORDER_CONFIRMED, total);
+    }
 
-        return new OrderStatus(ORDER_CONFIRMED, total);               //  N 14
+    /* ──── NEW METHODS (added for integration) ──── */
+
+    public double calculateTax(double amount, RegionEnum region) {
+        if (amount <= 0) return 0;
+        if (region == DOMESTIC) return Math.round(amount * 0.08 * 100.0) / 100.0;
+        if (region == INTERNATIONAL) return Math.round(amount * 0.15 * 100.0) / 100.0;
+        return 0;
+    }
+
+    public boolean isOrderEligibleForReturn(double total, int daysSinceOrder) {
+        return total > 0 && total < 500 && daysSinceOrder <= 30;
+    }
+
+    public String getOrderSummary(int quantity, double unitPrice) {
+        return "Order: " + quantity + " x $"
+               + String.format("%.2f", unitPrice)
+               + " = $" + String.format("%.2f", quantity * unitPrice);
     }
 }
