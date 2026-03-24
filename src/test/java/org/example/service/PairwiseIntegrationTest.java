@@ -28,7 +28,6 @@ public class PairwiseIntegrationTest {
 
     private CheckoutService checkoutService;
 
-    /* ── constants ─────────────────────────────────── */
     private static final Long   CUSTOMER_ID = 1L;
     private static final int    QTY         = 3;
     private static final double UNIT_PRICE  = 50.0;
